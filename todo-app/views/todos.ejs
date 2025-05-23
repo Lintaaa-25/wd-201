@@ -1,7 +1,14 @@
 
 <div>
   <h5>
-    <%= title %> <span class="bg-gray-100 ml-2 px-2"><%= data.length %></span>
+    <%= title %>
+  <span class="bg-gray-100 ml-2 px-2"
+    id="<%= title === 'Overdue' ? 'count-overdue' :
+           title === 'Due Today' ? 'count-due-today' :
+           title === 'Due Later' ? 'count-due-later' :
+           title === 'Completed Items' ? 'count-completed' : '' %>">
+    <%= data.length %>
+  </span>
   </h5>
   <ul class="list-none">
     <% for(var i = 0; i < data.length; i++) { %>
