@@ -81,7 +81,7 @@ passport.deserializeUser((id, done) => {
 
 app.get("/", async (request, response) => {
   if (request.isAuthenticated()) {
-    return response.redirect("/todo");
+    return response.redirect("/todos");
   }
   return response.render("index", {
     title: "Todo Application",
@@ -181,14 +181,16 @@ app.get("/signout", (request, response, next) => {
 
 app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   try {
-    const todos = await Todo.findAll({
+    const todoslist = await Todo.findAll({
       where: { userId: request.user.id },
     });
-    return response.json(todos);
+    return response.json(todoslist);
   } catch (error) {
+    console.log(error);
     return response.status(422).json(error);
   }
 });
+
 
 app.get("/todos/:id", async function (request, response) {
   try {
@@ -221,7 +223,7 @@ app.post(
         completed: false,
         userId: request.user.id,
       });
-      return response.redirect("/todos");
+      return response.redirect("/todo");
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
