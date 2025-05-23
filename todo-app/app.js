@@ -80,10 +80,7 @@ passport.deserializeUser((id, done) => {
 });
 
 app.get("/", async (request, response) => {
-  if (request.isAuthenticated()) {
-    return response.redirect("/todo");
-  }
-  return response.render("index", {
+  response.render("index", {
     title: "Todo Application",
     csrfToken: request.csrfToken(),
   });
@@ -120,7 +117,6 @@ app.get("/signup", (request, response) => {
     csrfToken: request.csrfToken(),
   });
 });
-
 app.post("/users", async (request, response) => {
   if (request.body.email.length == 0) {
     request.flash("error", "Email can not be empty!");
@@ -131,13 +127,12 @@ app.post("/users", async (request, response) => {
     request.flash("error", "First name can not be empty!");
     return response.redirect("/signup");
   }
-
   if (request.body.password.length < 8) {
-    request.flash("error", "Password length should be minimum 8");
+    request.flash("error", "Password length should be minimun 8");
     return response.redirect("/signup");
   }
-
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  console.log(hashedPwd);
 
   try {
     const user = await User.create({
@@ -149,15 +144,11 @@ app.post("/users", async (request, response) => {
     request.login(user, (err) => {
       if (err) {
         console.log(err);
-        return response.redirect("/login");
       }
-      request.flash("success", "Signup successful!");
-      return response.redirect("/todo");
+      response.redirect("/todo");
     });
   } catch (error) {
-    request.flash("error", "Email already exists or other error.");
     console.log(error);
-    return response.redirect("/signup");
   }
 });
 
@@ -185,17 +176,17 @@ app.get("/signout", (request, response, next) => {
   });
 });
 
-app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
-  const userId = request.user.id;
+app.get("/todos", async (request, response) => {
+  // defining route to displaying message
+  console.log("Todo list");
   try {
-    const todos = await Todo.findAll({ where: { userId } });
-    return response.json(todos);
+    const todoslist = await Todo.findAll();
+    return response.json(todoslist);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
 });
-
 app.get("/todos/:id", async function (request, response) {
   try {
     const todo = await Todo.findByPk(request.params.id);
