@@ -120,6 +120,7 @@ app.get("/signup", (request, response) => {
     csrfToken: request.csrfToken(),
   });
 });
+
 app.post("/users", async (request, response) => {
   if (request.body.email.length == 0) {
     request.flash("error", "Email can not be empty!");
@@ -130,12 +131,13 @@ app.post("/users", async (request, response) => {
     request.flash("error", "First name can not be empty!");
     return response.redirect("/signup");
   }
+
   if (request.body.password.length < 8) {
-    request.flash("error", "Password length should be minimun 8");
+    request.flash("error", "Password length should be minimum 8");
     return response.redirect("/signup");
   }
+
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  console.log(hashedPwd);
 
   try {
     const user = await User.create({
@@ -147,11 +149,15 @@ app.post("/users", async (request, response) => {
     request.login(user, (err) => {
       if (err) {
         console.log(err);
+        return response.redirect("/login");
       }
-      response.redirect("/todo");
+      request.flash("success", "Signup successful!");
+      return response.redirect("/todo");
     });
   } catch (error) {
+    request.flash("error", "Email already exists or other error.");
     console.log(error);
+    return response.redirect("/signup");
   }
 });
 
