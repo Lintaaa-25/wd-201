@@ -221,7 +221,7 @@ app.post(
         completed: false,
         userId: request.user.id,
       });
-      return response.redirect("/todo");
+      return response.redirect("/todos");
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);
