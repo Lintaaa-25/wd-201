@@ -80,7 +80,10 @@ passport.deserializeUser((id, done) => {
 });
 
 app.get("/", async (request, response) => {
-  response.render("index", {
+  if (request.isAuthenticated()) {
+    return response.redirect("/todo");
+  }
+  return response.render("index", {
     title: "Todo Application",
     csrfToken: request.csrfToken(),
   });
