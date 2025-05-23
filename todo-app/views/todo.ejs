@@ -88,8 +88,6 @@
         include('todos.ejs', {title: "Due Later", data: dueLater}) %> <%-
         include('todos.ejs', {title: "Completed Items", data: completedItems})
         %>
-        <%- include("footer.ejs") %>
-
         <% if(messages && messages.error && messages.error.length > 0)  { %>
           <% for(var i=0; i<messages.error.length; i++) { %>
             <p class="bg-red-200 my-3 list-none rounded px-4 py-2"><%= messages.error[i] %></p>
@@ -99,3 +97,4 @@
     </div>
   </body>
 </html>
+
